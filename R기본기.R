@@ -383,3 +383,64 @@ subset(member,select=-c(TEL))
 #3.컬럼명을 '번호,이름,주소,취미'로 변경하시오
 colnames(member) <- c('번호','이름','주소','TEL','HOBBY')
 member
+
+
+#리스트
+patients <- data.frame(name <- c('하나','두나','세나'),
+                       age <- c(22,20,25),
+                       gender <- c('M','F',"M"),
+                       blood <- c("A","O","B"))
+patients
+no.patients <- data.frame(day=c(1:6),no=c(50,60,55,52,65,58))
+no.patients
+
+listPatients <- list(patients,no.patients) #list로 두개의 데이터프레임을 연결
+listPatients
+
+#각 데이터에 이름 부여하면서 추가
+listPatients=list(patients=patients,no.patients=no.patients)
+listPatients
+
+#리스트 요소선택
+listPatients$patients #요소명 입력
+listPatients[[1]] #인덱스 입력
+listPatients[['patients']] #인덱스 내에 요소명 입력(''필요)
+
+#apply함수 (lapply => 결과값 list, sapply=>vector???)
+l=lapply(listPatients$no.patients,mean)
+s=sapply(listPatients$no.patients,mean)
+
+str(l)
+str(s)
+
+#데이터취득과 정제
+
+#파일불러오기(txt파일-주의! 마지막 빈행 추가, encoding시 ansi로 변경)
+students <- read.table("C:/r/students.txt",header=T)
+students
+
+#구조확인
+str(students)
+
+#파일을 있는 형태 그대로 읽음
+students <- read.table("C:/r/students.txt",header=T,as.is=T)
+students
+#파일을 읽을 때 문장을 요인(factor)으로 인식하지 않도록 설정
+students <- read.table("C:/r/students.txt",header=T,stringsAsFactors = F)
+students
+
+students<- read.csv("C:/r/std2.csv",header=T,as.is=T)
+students
+str(students)
+
+students$name <- as.character(students$name)
+str(students)
+
+#도움말보기 ?붙이기
+?write.table
+
+#문장에 큰따옴표가 표시됨(그대로)
+write.table(students,file="C:/r/output.txt")
+#문장에 큰따옴표가 표시되지 않음
+write.table(students,file="C:/r/output2.txt",quote=F)
+
