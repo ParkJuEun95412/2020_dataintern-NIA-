@@ -214,3 +214,66 @@ air_narm <- na.omit(airquality)
 mean(air_narm$Solar.R)
 #3. mean함수 내에 속성인 na.rm()를 이용해서 결측값을 제거하고 처리
 mean(airquality$Solar.R,na.rm=T)
+
+#이상값처리
+#1.조건식으로 이상값 제거하여 새로운 프레임으로 만들어서 처리(이상값제거)
+name <- c('하나','두나','세나','네나','다나')
+age <- c(22,20,25,30,27)
+gender <- c('M','F',"M","K","F") #이상값 K
+blood <- c("A","O","B","AB","C") #이상값 C
+
+patients <- data.frame(name,age,gender,blood)
+patients
+
+#성별에서 이상값 제거(조건식으로 필요한 부분만 선택해서 새로운 프레임 만들어서 처리)
+patients_outrm <- patients[patients$gender=='M'|patients$gender=='F',]
+patients_outrm
+
+#성별과 혈액형에서 이상값 제거
+patients_outrm <- patients[patients$gender=='M'|patients$gender=='F'&(patients$blood=='A'|patients$blood=='B'|patients$blood=='AB'|patients$blood=='O'),]
+patients_outrm
+
+#2. 이상값을 결측값으로 변경하여 원래 데이터 프레임에 넣어줌
+#숫자로 구성된 이상치
+name <- c('하나','두나','세나','네나','다나')
+age <- c(22,20,25,30,27)
+gender <- c(1,2,1,3,2) #이상값 3
+blood <- c(1,3,2,4,5) #1<이상값<=4
+
+patients <- data.frame(name,age,gender,blood)
+patients
+#이상값->결측값
+patients$gender <- ifelse(patients$gender==3,NA,patients$gender)
+patients
+patients$blood <- ifelse(patients$blood<1|patients$blood>4,NA,patients$blood)
+patients
+
+#결측값을 제거
+patients[!is.na(patients$gender)&!is.na(patients$blood),]
+
+#boxplot을 이용하여 정상값과 이상값 구분
+boxplot(airquality[,c(1:4)])
+boxplot(airquality[,1])
+boxplot(airquality[,1])$stats #통계값 보여주기
+
+?boxplot
+boxplot(decrease ~ treatment, data = OrchardSprays, col = "bisque",
+                log = "y")
+
+
+#이상값은 NA값에 포함되지 않음?????????
+air <- airquality
+table(is.na(air$Ozone)) #116/37
+
+air$Ozone
+#이상값을 NA로 변경
+air$Ozone <- ifelse(air$Ozone<1|air$Ozone>122,NA,air$Ozone)
+table(is.na(air$Ozone)) #114/39
+
+#NA제거
+air_narm <- air[!is.na(air$Ozone),]
+mean(air_narm$Ozone)
+boxplot(air_narm$Ozone)$stats
+
+
+#데이터 가공
