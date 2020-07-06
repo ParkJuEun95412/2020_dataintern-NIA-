@@ -273,6 +273,6 @@ t.test(data2, alternative = c("greater"))
 t.test(data3, alternative = c("greater"))
 
 session_times <- read.csv('c:/r/data/web_page_data.csv')
-head(session_times) #A/B 값이 번갈아 나옴 두가지 
+head(session_times) #A/B 값이 번갈아 나옴 두가지 집단
 t.test(Time~Page, data=session_times, alternative='less')
 
