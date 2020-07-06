@@ -223,8 +223,9 @@ loans_income <- read.csv('c:/r/data/loans_income.csv')[,1]
 samp_data <- data.frame(income=sample(loans_income,1000),type='data_dist')
 str(samp_data)
 
-#tapply #####################설명다
-
+#tapply #####################설
+tapply: 요인(factor)의 수준(level)별로 특정 벡터에 함수 명령어를 동시에 적용(
+tapply(함수사용할 수치, 인수의 index,적용함수)
 samp <- data.frame(name=factor(c('kim','choi','choi','lee','kim','lee')),score=c(50,30,10,50,20,30))
 
 tapply(samp$score, samp$name, length)
@@ -238,7 +239,7 @@ samp_mean_20 <- data.frame(income=tapply(sample(loans_income,1000*20),rep(1:1000
 str(samp_mean_20)
 
 #rbind ######################설명다
-
+# 데이터 프레임 rbind, 타입을 factor 변환
 income <- rbind(samp_data, samp_mean_05, samp_mean_20)
 str(income)
 income$type = factor(income$type,
