@@ -1,0 +1,253 @@
+#0706
+
+#test <- c(rep(55,17))
+#test
+test0 <- c(58,49,39,99,32,88,62,30,55,65,44,55,57,53,88,42,39)
+test0
+
+shapiro.test(test0)
+
+t.test(test0,alternative = c("greater"), mu=55)
+
+Sys.setlocale("LC_COLLATE", "ko_KR.UTF-8")
+#빈도분
+
+fruits <- read.csv('C:/r/통계소스/통계소스/love_fruits.csv',header=T);fruits
+
+prop.table(table(fruits$선호과일))
+
+round(prop.table(table(fruits$선호과일))*100,2)
+
+table(fruits$선호과일)
+
+count <- c(table(fruits$선호과일))
+
+pct <- c(round(prop.table(table(fruits$선호과일))*100,2))
+
+love_fruits <- data.frame(건=count,비=pct)
+love_fruits
+
+barplot(love_fruits$건,names.arg=c("바나나","복숭아","사과","체리","포도"),ylim=c(0,15),col=rainbow(5))
+
+x <- c(3,5,8,11,13)
+y <- c(1,2,3,4,5)
+cor(x,y)
+cor.test(x,y)
+
+
+#회귀분석
+
+x <- c(110,120,130,140,150)
+y <- c(100,105,128,115,142)
+
+#pch plot point(1~25)
+plot(x,y,pch=20,col='red')
+
+?pch
+
+line <- lm(y~x)
+line
+abline(line,col='blue')
+
+score <- read.csv('C:/r/통계소스/통계소스/score.txt',header=T,sep=',')
+attach(score)
+score
+
+lm1 <- lm(성적~IQ)
+lm1
+
+y <- -5.292+0.6714*125
+y
+
+plot(IQ,성적,pch=20,col='red')
+abline(lm1,col='blue')
+
+
+lm1 <- lm(성적~다니는학원수)
+lm1
+
+y <- 69.488+4.953*125
+y
+
+plot(다니는학원수,성적,pch=20,col='red')
+abline(lm1,col='blue')
+
+lm3 <- lm(성적~IQ+다니는학원수+게임하는시간+TV시청시간)
+lm3
+
+y <- 23.2992+(0.4684*130)+(0.7179*3)+(-0.8390*2)+(-1.3854*1)
+y
+summary(lm3)
+
+친절도 <- c(15,10,13,7,9,8,21,9,14,8)
+만족도 <- c(15,14,12,8,14,7,16,10,15,12)
+
+cor.test(만족도,친절도)
+
+lm2<- lm(만족도~친절도)
+
+summary(lm2)
+
+
+data<- data.frame(x=(c(100,90,98,79,81,69,80,77,68,54)),
+y=(c(5,4,5,3,4,3,2,3,2,1)),
+z=(c(5,3,4,3,4,3,2,3,2,1)),
+w=(c(5,3,3,2,3,3,4,3,2,1)))
+
+data
+lm2<- lm(x~.,data=data)
+lm2
+
+summary(lm2)
+
+data1<- data.frame(x=(c(100,90,98,79,81,69,80,77,68,74)),
+                  y=(c(5,4,4,3,4,3,4,3,2,3)),
+                  z=(c(5,3,5,2,3,2,3,3,2,3)),
+                  w=(c(5,3,4,4,3,2,4,4,2,3)))
+
+data1
+lm3<- lm(x~.,data=data1)
+lm3
+
+summary(lm3)
+
+
+#
+install.packages("ggplot2")
+install.packages("corrplot")
+install.packages('descr')
+install.packages('klaR')
+
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+library(descr)
+library(klaR)
+
+
+#위치추정
+
+state <- read.csv('c:/r/data/state.csv')
+state
+mean(state[['Population']])
+mean(state[['Population']],trim=0.1)
+median(state[['Population']])
+weighted.mean(state[['Murder.Rate']],w=state[["Population"]])
+
+#weighted mean
+weighted_mean1 <- (200*0.09+1000*0.21)/(200+1000)
+weighted_mean1
+
+#weighted mean
+alcohol <- data.frame(volume=c(200,1000),alcohol_rate=c(0.09,0.21))
+alcohol
+weighted_mean2 <- weighted.mean(alcohol$alcohol_rate,alcohol$volume)
+weighted_mean2
+
+var(state[['Population']])
+sd(state[['Population']])
+IQR(state[['Population']])
+mad(state[['Population']])
+
+
+x <- c(1,2,3,3,5,6,7,9)
+mean(x)
+median(x)
+max(x)
+min(x)
+summary(x)
+
+var(x)
+sd(x)
+IQR(x)
+mad(x)
+quantile(x,p=c(.05,.25,.5,.75,.95))
+
+
+quantile(state[['Population']],p=c(.05,.25,.5,.75,.95))
+boxplot(state[['Population']]/1000000,ylab="Population (millions)")
+
+
+#
+breaks <- seq(from=min(state[['Population']]),to=max(state[['Population']]),length=11)
+pop_freq <- cut(state[['Population']],breaks=breaks, right=TRUE, include.lowest = TRUE)
+table(pop_freq)
+
+hist(state[['Population']],breaks=breaks)
+
+x <- c(1,2,3,3,5,6,7,9)
+breaks1 <- seq(from=min(x),to=max(x),length=5)
+pop_freq1 <- cut(x,breaks=breaks,right=TRUE, include.lowest = TRUE)
+table(pop_freq1)
+
+hist(x,breaks=breaks1)
+
+#barplot
+dfw <- read.csv('c:/r/data/dfw_airline.csv')
+barplot(dfw)
+barplot(as.matrix(dfw))
+
+#cex.axis/ cex.names
+barplot(as.matrix(dfw)/6,cex.axis=0.8,cex.names = 0.7)
+
+#ylim
+barplot(as.matrix(dfw)/6,ylim=c(0,20000),cex.axis = 0.8, cex.names=0.7)
+
+#cor()
+sp500_px <- read.csv('c:/r/data/sp500_0.csv')
+sp500_sym <- read.csv('c:/r/data/sp500_sym.csv',stringsAsFactors = FALSE)
+
+telecom <- sp500_px[,sp500_sym[sp500_sym$sector=='telecommunications_services','symbol']]
+telecom <- telecom[row.names(telecom)>'2012-07-07',]g
+#
+telecom_cor <- cor(telecom)
+telecom_cor
+
+#corplot package corrplot()
+corrplot(cor(telecom))
+corrplot(cor(telecom),method = 'circle')
+corrplot(cor(telecom),method='square')
+corrplot(cor(telecom),method='ellipse')
+corrplot(cor(telecom),method='number')
+corrplot(cor(telecom),method='shade')
+corrplot(cor(telecom),method='color')
+corrplot(cor(telecom),method='pie')
+
+
+plot(telecom$T,telecom$VZ,xlab='T',ylab='VZ')
+
+
+
+#
+loans_income <- read.csv('c:/r/data/loans_income.csv')[,1]
+samp_data <- data.frame(income=sample(loans_income,1000),type='data_dist')
+str(samp_data)
+
+#tapply #####################설명다
+
+samp <- data.frame(name=factor(c('kim','choi','choi','lee','kim','lee')),score=c(50,30,10,50,20,30))
+
+tapply(samp$score, samp$name, length)
+tapply(samp$score, samp$name, mean)
+
+#1000 -> 5
+samp_mean_05<- data.frame(income=tapply(sample(loans_income,1000*5),rep(1:1000,rep(5,1000)),FUN = mean),type='mean_of_5')
+str(samp_mean_05)
+#1000->20
+samp_mean_20 <- data.frame(income=tapply(sample(loans_income,1000*20),rep(1:1000,rep(20,1000)),FUN=mean),type='mean_of_20')
+str(samp_mean_20)
+
+#rbind ######################설명다
+
+income <- rbind(samp_data, samp_mean_05, samp_mean_20)
+str(income)
+income$type = factor(income$type,
+                     levels=c('data_dist', 'mean_of_5', 'mean_of_20'),
+                     labels=c('Data', 'Mean of 5', 'Mean of 20'))
+
+library(ggplot2)
+#ggplot(데이터, aes(x=x축변수,y=y축 변수))
+#facet_grid(type~.):집단간 비교를 위한 면 
+ggplot(income,aes(x=income))+geom_histogram(bins=40)+facet_grid(type ~ .) #막대개수, 가로분할
+
+ggplot(income,aes(x=income))+geom_histogram(bins=400)+facet_grid(.~ type) #막대개수, 세로분할
