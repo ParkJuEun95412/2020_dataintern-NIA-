@@ -251,3 +251,28 @@ library(ggplot2)
 ggplot(income,aes(x=income))+geom_histogram(bins=40)+facet_grid(type ~ .) #막대개수, 가로분할
 
 ggplot(income,aes(x=income))+geom_histogram(bins=400)+facet_grid(.~ type) #막대개수, 세로분할
+
+
+#boot
+library(boot)
+loans_income <- read.csv('c:/r/data/loans_income.csv')[,1]
+stat_fun <- function(x,idx) median(x[idx])
+boot_obj <- boot(data=loans_income,statistic = stat_fun,R=1000)
+boot_obj
+
+# 세 종류 데이터
+data1 <- c(30, -5, 55, -30, -20, 45)
+data2 <- c(12, 13, 12, 13, 12, 13)
+data3 <- c(30, -5, 55, -30, -20, 45, 30, -5, 55, -30, -20, 45)
+
+
+shapiro.test(data1);shapiro.test(data2);shapiro.test(data3)
+
+t.test(data1, alternative = c("greater"))
+t.test(data2, alternative = c("greater"))
+t.test(data3, alternative = c("greater"))
+
+session_times <- read.csv('c:/r/data/web_page_data.csv')
+head(session_times)
+t.test(Time~Page, data=session_times, alternative='less')
+
