@@ -23,3 +23,148 @@ head(clicks)
 #chisq.test()
 chisq.test(clicks,simulate.p.value = TRUE) #귀무가설 채택 
 ![그림1](https://user-images.githubusercontent.com/57995077/86680326-68ac1b80-c039-11ea-95fb-41883c9831a4.png)
+
+#카이제곱검정 - 적합도 검정 (요인이 하나일때, 이론적 분포를 따르고 있는 지를 검정)
+#가설설정
+#귀무가설 H0: 관측갑의 도수와 가정한 이론도수(기대관측도수)가 동일하다
+#대립가설 H1: 적어도 하나의 범주( 혹은 계급)의 도수가 가정한 이론 도수(기대 관측도수)와 다르다
+
+obs <- c(20,40,40)
+obs.probs <- c(2/10,3/10,5/10) #카이제곱검정은 그룹간의 비율차이를 검정
+(g.fit <- chisq.test(obs,p=obs.probs))
+
+#분석결과
+#p-value가 0.06948, 유의수준 a 0.05 보다 크므로 귀무가설 H0을 채택 
+#"멘델이 주장한 콩의 잡종비율 이론적 분포는 적합하다"고 판단할 수 있음.
+
+#카이제곱검정 - 독립성 검정( 요인두개, 관련이 없이 독립적인지 판단)
+#귀무가설(:독립적이다)이 채택되어야 한다. (대립가설: 독립적이지 않다) #유의수준이 0.05이상이어야 내 의견과 같음
+
+raw_data <- c(7,13,9,12,13,21,10,19,11,18,12,13)
+data_mtx <- matrix(raw_data,byrow=TRUE,nrow=3) 
+data_mtx
+
+#dimnames() 이용해서 매트릭스 열과 행에 이름 부여
+dimnames(data_mtx) <- list('Class'=c("Class1","Class2","Class3"),"Score"=c("ScoreA","ScoreB","ScoreC","ScoreF"))
+data_mtx
+
+#addmargins() 합계 추가
+addmargins(data_mtx)
+
+# 1을 기준으로 바꾸어줌 proportional distribution: prop.table()
+addmargins(prop.table(data_mtx))
+
+#barplot
+barplot(t(data_mtx), beside=TRUE,legend=TRUE, ylim=c(0,30),ylab="Observed frequencies in sample", main ="Frequncy of math score by class")
+
+(i.fit <- chisq.test(data_mtx) )
+#가설설정
+# 귀무가설 H0: 두변수 X와 Y는 서로 독립이다(관련성이 없다)
+# 대립가설 H1: 두 변수 X와 Y는 서로 독립이 아니다(관련성이 없다)
+
+#귀무가설 채택(p-value:0.9667). "학급과 빅데이터 분석 성적 간에는 서로 관련성이 없다. 즉 독립적이다"고 판단할 수 있다.
+
+#카이제곱분포의누적분포함수를이용한p-value 계산
+1-pchisq(q=c(1.3859),df=6,lower.tail = TRUE)
+
+#카이제곱검정 - 동질성 검정( 요인1개&부모집단, 각 열에서 행들의 동질성을 검정)
+#부모집단을 먼저 설정하고 부모집단을 그룹화하여 그룹별 동질성을 검정
+
+#가설설정
+#귀무가설 H0: 남학생/여학생 별 선호하는 교과목이 동일하다
+#대립가설 H1: 남학생/ 여학생별 선호하는 교과목이 동일하지 ㅇ낳다 
+
+raw_data <- c(50,30,20,50,80,70)
+data_mtx <- matrix(raw_data,byrow=TRUE, nrow=2)
+data_mtx
+
+dimnames(data_mtx) <- list('성별'=c('남학생',"여학생"),'DS교과목'=c('통계','머신러닝','딥러닝'))
+
+data_mtx
+
+addmargins(data_mtx)
+
+addmargins(prop.table(data_mtx))
+
+barplot(t(data_mtx),beside=TRUE,legend=TRUE,ylim=c(0,120),ylab="Obseved frequencies in sample",main='데이터 사이언스 교과목 선호조사 결과')
+
+(h.fit <- chisq.test(data_mtx))
+#h.fit <- chisq.test(data_mtx)은 h.fit이라는 변수안에 저장되서 결과를 바로 볼수 없는데 ()를 밖에 감싸주면 결과값이 바로 출력됨.
+
+#Pearson's Chi-squared test
+
+#data:  data_mtx
+#X-squared = 19.318, df = 2, p-value = 6.384e-05
+
+#분석결과
+#p-value가 유의수준 보다 작기 때문에 대립가설 채택
+
+#단순선형회귀
+#데이터 준비
+lung <- read.csv('c:/r/data/LungDisease.csv')
+
+attach(lung) #cbind()할때 column명으로 불러오기 위해서 필요
+
+#면진에 대한 노출 연수와 폐활량 산전도 그래프
+plot(lung$Exposure,lung$PEFR,xlab ='Exposure',ylab='PEFR')
+
+#lm() 선형회귀모델
+(model <- lm(PEFR~Exposure,data=lung))
+#
+#Call:
+#lm(formula = PEFR ~ Exposure, data = lung)
+
+#Coefficients:
+#(Intercept)     Exposure  
+#    424.583       -4.185  
+
+
+#회귀선 그리기(abline)
+abline(model,col='blue')
+
+ymd<- predict(model)
+
+cbind(PEFR,ymd)
+
+join <- function(i)
+  lines(c(Exposure[i],Exposure[i]),c(PEFR[i],ymd[i]),col='green')
+
+sapply(1:122,join) #join 함수에 1~122까지 돌면서 연결
+
+#str(lung)
+#'data.frame':	122 obs. of  2 variables:
+# $ PEFR    : int  390 410 430 460 420 280 420 520 610 590 ...
+# $ Exposure: int  0 0 0 0 1 2 2 2 3 3 ...
+
+
+
+#car데이터로 단순선형회귀
+str(cars)
+head(cars)
+
+attach(cars)
+
+# 1.plot
+plot(dist~speed, data=cars)
+
+# 2. lm() ~ abline()
+m3 <- lm(dist~speed,data=cars)
+abline(m3,col='red')
+
+# 3.predict() 함수사용하여 예측
+yhat<- predict(m3)
+
+# 4. 잘 예측 되었는지 비교하기 위해 오른쪽에 실제 값을 붙여줌
+cbind(dist,yhat)
+
+# 5. 기존 x값과 예측갑y^과 실제값y를 비교해주는 조인 함수 생성
+# 직선연결 lines(x,y)
+join <- function(i)
+  lines(c(speed[i],speed[i]),c(dist[i],yhat[i]),col='green')
+
+sapply(1:50,join)
+
+
+#예측값과 잔차
+
+
