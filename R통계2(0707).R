@@ -22,3 +22,4 @@ head(clicks)
 
 #chisq.test()
 chisq.test(clicks,simulate.p.value = TRUE) #귀무가설 채택 
+![그림1](https://user-images.githubusercontent.com/57995077/86680326-68ac1b80-c039-11ea-95fb-41883c9831a4.png)
