@@ -167,4 +167,82 @@ sapply(1:50,join)
 
 #예측값과 잔차
 
+std90 <- read.csv("c:/r/data/student90.csv")
+head(std90)
+str(std90)
+m<-lm(weight_kg ~ height_cm, data=std90)
+m
+
+coef(m) 
+
+std90$weight_kg
+fitted(m)[1:4] #predict()함수랑같은건지
+#32.6604144 + 0.2246605 * std90$height_cm[1:4]
+
+plot(m, which=4)
+
+#이상치
+(x_cooks.d <- cooks.distance(m)) #cooks.distance()
+x_cooks.d[1:4] 
+
+NROW(x_cooks.d)
+
+x_cooks.d[which(x_cooks.d>qf(0.5, df1=2,df2=88))] #분위수함수
+
+install.packages("car")
+library(car)
+outlierTest(m)
+
+#잔차
+residuals(m)[1:4]
+std90$weight_kg[1:4]
+fitted(m)[1:4] + residuals(m)[1:4]
+
+#직선일수록정규성
+#잔차는이상치해결방법과연
+qqnorm(residuals(m))
+qqline(residuals(m))
+
+shapiro.test(residuals(m))
+confint(m, level = 0.95)
+
+#신뢰구간내
+m_conf <-predict(m, level = 0.95, interval = "confidence")
+head(m_conf)
+
+#신뢰구간그림으로나타내기(예측값의신뢰구간)
+plot(weight_kg~height_cm, data=std90)
+lwr <-m_conf[,2]
+upr <-m_conf[,3]
+sx <-sort(std90$height_cm, index.return=TRUE)
+abline(coef(m), lwd=2)
+lines(sx$x, lwr[sx$ix], col="blue", lty=2)
+lines(sx$x, upr[sx$ix], col="blue", lty=2)
+
+m_pred <-predict(m, level = 0.95, interval = "predict")
+head(m_pred)
+
+p_lwr <-m_pred[,2]
+p_upr <-m_pred[,3]
+lines(std90$height_cm, p_lwr, col="red", lty=2)
+lines(std90$height_cm, p_upr, col="red", lty=2)
+
+deviance(m)
+predict(m, newdata = data.frame(height_cm=175), interval = "confidence")
+#설명력은키와몸무게의예측만필요해서선형성은필요없기때문에상관없음
+summary(m)
+
+
+anova(m)
+(m_a <-lm(weight_kg ~ height_cm, data = std90))
+(m_b <-lm(weight_kg ~ 1, data = std90))
+anova(m_a, m_b)
+
+m_aa<- predict(m_a)
+st_w<- std90$weight_kg
+m_bb<- predict(m_b)
+rmse(m_aa,st_w)
+rmse(m_bb, st_w)
+mae(m_aa, st_w)
+mae(m_bb, st_w)
 
