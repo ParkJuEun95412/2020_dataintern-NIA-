@@ -191,3 +191,53 @@ legend("topright",c('2.2','3.2','4.2'),title='wt',lty=1:3,col=1:3)
 
 #차의 중량이 늘어날수록
 #마력과 연비의 관계가 약해짐을 알수있음
+
+# 다중 선형회귀
+str(trees)
+# 'data.frame':	31 obs. of  3 variables:
+#  $ Girth : num  8.3 8.6 8.8 10.5 10.7 10.8 11 11 11.1 11.2 ...
+#  $ Height: num  70 65 63 72 81 83 66 75 80 75 ...
+#  $ Volume: num  10.3 10.3 10.2 16.4 18.8 19.7 15.6 18.2 22.6 19.9 ...
+
+summary(trees)
+#      Girth           Height       Volume     
+#  Min.   : 8.30   Min.   :63   Min.   :10.20  
+#  1st Qu.:11.05   1st Qu.:72   1st Qu.:19.40  
+#  Median :12.90   Median :76   Median :24.20  
+#  Mean   :13.25   Mean   :76   Mean   :30.17  
+#  3rd Qu.:15.25   3rd Qu.:80   3rd Qu.:37.30  
+#  Max.   :20.60   Max.   :87   Max.   :77.00 
+
+# 지름,키(독립변수)/ 부피(종속변수)
+# 가설: 부피는 지름이 클수록, 키가 클수록 클 것이다.
+
+# scatterplot3d
+
+install.packages("scatterplot3d")
+library(scatterplot3d)
+
+# 함수로trees 데이터의분포를확인하기
+scatterplot3d(trees$Girth,trees$Height,trees$Volume)
+
+# 다중선형회귀모델생성
+(m<- lm(Volume~Girth+Height, data=trees))
+
+# trees 데이터와회귀모델을중첩하여시각화하기
+s <- scatterplot3d(trees$Girth,trees$Height,trees$Volume,pch=20,type='h',angle=55)
+s$plane3d(m)
+
+# 임의의 값을 지름과 길이에 넣기
+(n.data <- data.frame(Girth=c(8.5,13.0,19.0),Height=c(72,86,85)))
+#   Girth Height
+# 1   8.5     72
+# 2  13.0     86
+# 3  19.0     85
+
+# 예측하기 (회귀식과 결과값 동일)
+(n.y <- predict(m,newdata = n.data))
+#         1         2         3 
+#  6.457794 32.394034 60.303746 
+
+# 임의의 값에 대해 예상결과 시각화
+s <- scatterplot3d(c(8.5,13.0,19.0),c(72,86,85),n.y,pch=20,type='h',color='red',angle=55)
+s$plane3d(m)
